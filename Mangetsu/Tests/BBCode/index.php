@@ -4,7 +4,7 @@
      <title>Text!</title>
   </head>
   <body>
-    <form action="index.php">
+      <form action="text.php" method="post">
             Text: <textarea name="text"></textarea><br />
             <button type="submit">Done</button>
     </form>

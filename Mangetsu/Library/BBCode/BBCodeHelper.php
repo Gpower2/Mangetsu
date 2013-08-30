@@ -1,6 +1,10 @@
 <?php
-    class bbcode {
-        function bb($bbtext){
+namespace Mangetsu\Library\BBCode;
+{
+    class BBCodeHelper 
+    {
+        function ConvertBBCodeToHTML($argBBCodeText)
+        {
             $bbtags = array(
                 '/(?<!\\\\)\[h1(?::\w+)?\](.*?)\[\/h1(?::\w+)?\]/si' => "<h1>\\1</h1>", // Defines HTML headings
                 '/(?<!\\\\)\[h2(?::\w+)?\](.*?)\[\/h2(?::\w+)?\]/si' => "<h2>\\1</h2>", // Defines HTML headings
@@ -49,20 +53,27 @@
                 '/(?<!\\\\)\[move(?::\w+)?\](.*?)\[\/move(?::\w+)?\]/si' => "<marquee direction=\"left\"  height=\"100%\" width=\"100%\">\\1</marquee>", // Scrolling text
             );
             
-            $bbtext = preg_replace(array_keys($bbtags), array_values($bbtags), $bbtext);
-            return $bbtext;
+            $argBBCodeText = preg_replace(array_keys($bbtags), array_values($bbtags), $argBBCodeText);
+            return $argBBCodeText;
         }
-                
-        function bbdisable($bbtext){ //Disabling BBcode
+              
+        /* Gpower2: Do we really need those functions????
+         * 
+        //Disabling BBcode
+        function bbdisable($bbtext)
+        { 
             $search = array('[', ']');
             $replace = array('&#91;', '&#93;');
             return str_replace($search, $replace, $bbtext);
         }
         
-        function bbstrip($bbtext) { // Clearing BBcode
+        // Clearing BBcode
+        function bbstrip($bbtext) 
+        { 
             $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
             $replace = '';
             return preg_replace($pattern, $replace, $bbtext);
-        }
+        }          
+         */
     }
-?>
+}
