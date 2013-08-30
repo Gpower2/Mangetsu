@@ -54,7 +54,8 @@ namespace Mangetsu\Library\BBCode;
             );
             
             $argBBCodeText = preg_replace(array_keys($bbtags), array_values($bbtags), $argBBCodeText);
-            return $argBBCodeText;
+            // Gpower2: we should return valid HTML here
+            return nl2br($argBBCodeText);
         }
               
         /* Gpower2: Do we really need those functions????
