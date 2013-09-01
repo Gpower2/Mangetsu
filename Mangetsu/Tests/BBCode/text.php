@@ -38,6 +38,12 @@ namespace Mangetsu\Tests\BBCode;
             //echo nl2br($bbcode->ConvertBBCodeToHTML($text) );
             // Gpower2: nl2br should not be needed, since the output is HTML
             echo $bbcode->ConvertBBCodeToHTML($text);
+            
+            echo "<br/>";
+            echo "<br/>";
+            
+            $text = file_get_contents('bbcodeTest02.txt' );
+            echo $bbcode->ConvertBBCodeToHTML($text);
         ?>
         <br/>
         <a href="index.php">Back</a>
