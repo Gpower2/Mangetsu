@@ -12,5 +12,21 @@ namespace Mangetsu\Tests\Database
     });
     
     $dbManager = new \Mangetsu\Library\Database\DatabaseManager("localhost", "root", "root", "animeclipse");
-    echo $dbManager->HostInfo();
+    echo 'HostInfo: '.$dbManager->GetHostInfo() . '<br />';
+    echo 'ClientInfo: '.$dbManager->GetClientInfo() . '<br />';
+    echo 'ClientVersion: '.$dbManager->GetClientVersion() . '<br />';
+    echo 'ServerInfo: '.$dbManager->GetServerInfo() . '<br />';
+    echo 'ServerVersion: '.$dbManager->GetServerVersion() . '<br />';
+    echo 'ProtocolInfo: '.$dbManager->GetProtocolInfo() . '<br />';
+    
+    echo 'GetAutoCommitMode: '.$dbManager->GetAutoCommitMode() . '<br />';
+    echo 'SetAutoCommitMode(false): '.$dbManager->SetAutoCommitMode(false) . '<br />';
+    echo 'GetAutoCommitMode: '.$dbManager->GetAutoCommitMode() . '<br />';
+    echo 'SetAutoCommitMode(true): '.$dbManager->SetAutoCommitMode(true) . '<br />';
+    echo 'GetAutoCommitMode: '.$dbManager->GetAutoCommitMode() . '<br />';
+    echo 'QueryInformation: '.$dbManager->GetQueryInformation() . '<br />';
+    
+    echo 'ErrorCode: '.$dbManager->GetErrorCode() . '<br />';
+    echo 'ErrorMessage: '.$dbManager->GetErrorMessage() . '<br />';
+
 }

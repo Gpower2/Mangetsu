@@ -95,12 +95,119 @@ namespace Mangetsu\Library\Database
         }
         
         /**
-         * Return the host information for the current database handler
+         * Returns the type of connection used
+         * @return string
          */
-        public function HostInfo()
+        public function GetHostInfo()
         {
             $this->checkDatabaseManager();
             return $this->_DatabaseHandler->host_info;
+        }
+        
+        /**
+         * Returns the MySQL client library version
+         * @return string
+         */
+        public function GetClientInfo()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->client_info;
+        }
+        
+        /**
+         * Returns the client version number (in format: main_version*10000 + minor_version *100 + sub_version)
+         * @return int
+         */
+        public function GetClientVersion()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->client_version;
+        }
+        
+        /**
+         * Returns the last error code for the most recent MySQLi function call that can succeed or fail
+         * @return int
+         */
+        public function GetErrorCode()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->errno;
+        }
+        
+        /**
+         * Returns the last error message for the most recent MySQLi function call that can succeed or fail
+         * @return string
+         */
+        public function GetErrorMessage()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->error;
+        }
+        
+        /**
+         * Returns the version of the MySQL protocol used
+         * @return int
+         */
+        public function GetProtocolInfo()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->protocol_version;          
+        }
+        
+        /**
+         * Returns the version of the MySQL server
+         * @return string 
+         */
+        public function GetServerInfo()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->server_info;                    
+        }
+        
+        /**
+         * Returns the version of the MySQL server
+         * @return int
+         */
+        public function GetServerVersion()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->server_version;
+        }
+        
+        /**
+         * Returns information about the most recently executed query
+         * @return string
+         */
+        public function GetQueryInformation()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->info;
+        }
+        
+        /**
+         * Turns on or off auto-committing database modifications
+         * @param bool $argMode
+         * @return bool Returns TRUE on success or FALSE on failure
+         */
+        public function SetAutoCommitMode($argMode)
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->autocommit($argMode);
+        }
+        
+        /**
+         * Returns the current state of autocommit mode on queries for the database connection
+         * @return bool
+         */
+        public function GetAutoCommitMode()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->query("SELECT @@autocommit")->fetch_row()[0];
+        }
+        
+        public function GetCharacterSetName()
+        {
+            
         }
     }
 }
