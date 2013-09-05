@@ -29,4 +29,14 @@ namespace Mangetsu\Tests\Database
     echo 'ErrorCode: '.$dbManager->GetErrorCode() . '<br />';
     echo 'ErrorMessage: '.$dbManager->GetErrorMessage() . '<br />';
 
+    echo 'ThreadID: ' . $dbManager->GetCurrentThreadID() . '<br />';
+    
+    echo 'Default database: ' . $dbManager->GetDefaultDatabase() . '<br />';
+    
+    echo 'Statistics: ';
+    print_r($dbManager->GetConnectionStatistics());
+    
+    $dbManager->KillCurrentDatabaseHandler();
+    $dbManager->Ping();
+    
 }

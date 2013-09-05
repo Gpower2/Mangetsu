@@ -205,9 +205,98 @@ namespace Mangetsu\Library\Database
             return $this->_DatabaseHandler->query("SELECT @@autocommit")->fetch_row()[0];
         }
         
+        /**
+         * Returns the current character set for the database connection
+         * @return String
+         */
         public function GetCharacterSetName()
         {
-            
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->character_set_name();
+        }
+        
+        /**
+         * Sets the default character set for the database connection
+         * @param type $argCharacterSetName the charset to be set as default
+         * @return bool Returns TRUE on success or FALSE on failure. 
+         */
+        public function SetCharacterSetName($argCharacterSetName)
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->set_charset($argCharacterSetName);
+        }
+        
+        /**
+         * Returns statistics about the client connection. Available only with mysqlnd
+         * @return array
+         */
+        public function GetConnectionStatistics()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->get_connection_stats();
+        }
+        
+        /**
+         * Returns the current process/thread ID
+         * @return int
+         */
+        public function GetCurrentThreadID()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->thread_id;
+        }
+        
+        /**
+         * Kills the current Database handler object, only if it is instanciated
+         */
+        public function KillCurrentDatabaseHandler()
+        {
+            // check if our database handler exists
+            if($this->_DatabaseHandler !== null)
+            {
+                // Kill connection
+                $this->_DatabaseHandler->kill($this->_DatabaseHandler->thread_id);
+                // Close connection
+                $this->_DatabaseHandler->close();
+                // Dereference the closed object
+                $this->_DatabaseHandler = null;                
+            }
+        }
+        
+        /**
+         * Returns whether the connection to the server is working
+         * @return bool
+         */
+        public function Ping()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->ping();
+        }
+        
+        /**
+         * Selects the default database for database queries
+         * @param type $argDatabaseName The database name
+         * @return bool Returns TRUE on success or FALSE on failure. 
+         */
+        public function SetDefaultDatabase($argDatabaseName)
+        {
+            $this->checkDatabaseManager();
+            if($this->_DatabaseHandler->select_db($argDatabaseName))
+            {
+                $this->_DatabaseName = $argDatabaseName;
+                return true;
+            }
+            return false;
+        }
+        
+        /**
+         * Returns the name of the selected default database for database queries
+         * @return string
+         */
+        public function GetDefaultDatabase()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->query("SELECT DATABASE()")->fetch_row()[0];
         }
     }
 }
