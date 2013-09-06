@@ -237,6 +237,19 @@ namespace Mangetsu\Library\Database
         }
         
         /**
+         * Gets the current system status.
+         * Returns a string containing information similar to that provided by 
+         * the 'mysqladmin status' command. This includes uptime in seconds and 
+         * the number of running threads, questions, reloads, and open tables. 
+         * @return string
+         */
+        public function GetServerStatus()
+        {
+            $this->checkDatabaseManager();
+            return $this->_DatabaseHandler->stat();
+        }
+        
+        /**
          * Returns the current process/thread ID
          * @return int
          */
@@ -298,5 +311,55 @@ namespace Mangetsu\Library\Database
             $this->checkDatabaseManager();
             return $this->_DatabaseHandler->query("SELECT DATABASE()")->fetch_row()[0];
         }
+        
+        /**
+         * Escapes special characters in a string for use in an SQL statement, 
+         * taking into account the current charset of the connection.
+         * Characters encoded are NUL (ASCII 0), \n, \r, \, ', ", and Control-Z. 
+         * It can also escape underscore (_) and percent (%) characters, 
+         * if it is so specified.
+         * @param string $argString The string to be escaped. 
+         * @param bool $argEscapeUnderscorePercentCharacters whether to escape underscore and percent characters
+         * @return string The escaped string
+         */
+        public function EscapeString($argString, $argEscapeUnderscorePercentCharacters = false)
+        {
+            $this->checkDatabaseManager();
+            $escapedString = $this->_DatabaseHandler->real_escape_string($argString);
+            if($argEscapeUnderscorePercentCharacters)
+            {
+                $escapedString = addcslashes($escapedString, '%_');
+            }
+            return $escapedString;
+        }
+        
+        public function SqlGetArray($argSql)
+        {
+            $this->checkDatabaseManager();
+            
+            
+        }
+        
+        public function SqlGetSingleValue($argSql)
+        {
+            $this->checkDatabaseManager();
+            
+        }
+        
+        public function SqlExecute($argSql)
+        {
+            $this->checkDatabaseManager();
+            
+        }
+        
+        public function SqlMultiExecute($argSql)
+        {
+            $this->checkDatabaseManager();
+            // ALWAYS USE TRANSACTION!!!
+            
+            
+        }
+        
+        
     }
 }

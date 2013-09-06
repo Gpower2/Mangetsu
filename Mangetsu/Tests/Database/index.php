@@ -32,8 +32,13 @@ namespace Mangetsu\Tests\Database
     echo 'ThreadID: ' . $dbManager->GetCurrentThreadID() . '<br />';
     
     echo 'Default database: ' . $dbManager->GetDefaultDatabase() . '<br />';
+
+    echo "Escape String: this is 100% George's cat  => " . $dbManager->EscapeString("this is 100% George's cat") . '<br />';
+    echo "Escape String: this is 100% George's cat  => " . $dbManager->EscapeString("this is 100% George's cat", true) . '<br />';
     
-    echo 'Statistics: ';
+    echo 'Server status: ' . $dbManager->GetServerStatus() . '<br />';
+    
+    echo 'Connection Statistics: ';
     print_r($dbManager->GetConnectionStatistics());
     
     $dbManager->KillCurrentDatabaseHandler();
