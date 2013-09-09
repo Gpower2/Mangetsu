@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+/* Font and text*/
+span.bold {font-weight: bold;}
+span.italic {font-style: italic;}
+span.underline {text-decoration: underline;}
+div.left {text-align: left;}
+div.right {text-align: right;}
+div.center {text-align: center;}
+div.justify {text-align: justify;}
+span.strikethrough {text-decoration: line-through;}
+
+/* Lists */
+ol.list_by_1 {list-style-type: decimal;}
+ol.list_by_i {list-style-type: lower-roman;}
+ol.list_by_I {list-style-type: upper-roman;}
+ol.list_by_a {list-style-type: lower-alpha;}
+ol.list_by_A {list-style-type: upper-alpha;}
+
+/* Quote */
+div.quote_title {background-color: #B0B0B0; padding: 4px; border: 1px inset; overflow: auto;}
+div.quote_text {padding: 7px; border: 1px inset; overflow: auto;}
+
+/* Code */
+div.code {margin-top: 10px; margin-left: 40px; margin-right: 40px;}
+div.code_title {background-color: green; padding: 4px; border: 1px inset;}
+div.code_text {padding: 7px; border: 1px inset; overflow: auto;}
+
+/* Spoiler */
+div.spoiler {width: 0px; height: 21px;}
+input.button {font-size: 10px; padding:2px; font-weight: bold;}
+div.text {margin-top: 7px; overflow: auto; padding: 7px; border: 1px inset;}
