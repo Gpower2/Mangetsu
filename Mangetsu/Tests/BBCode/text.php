@@ -4,6 +4,9 @@ namespace Mangetsu\Tests\BBCode;
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="/Mangetsu/Themes/Styles/bbcode.css" type="text/css">
+        <script type="text/javascript" src="/Mangetsu/Themes/Scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="/Mangetsu/Themes/Scripts/bbcode-spoiler.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf8">
         <title></title>
     </head>
@@ -32,7 +35,7 @@ namespace Mangetsu\Tests\BBCode;
             
             // file test
             
-            echo "<br/>";
+            echo "<br/> <hr>";
             
             $text = file_get_contents('bbcodeTest01.txt' );
             //echo nl2br($bbcode->ConvertBBCodeToHTML($text) );
@@ -40,7 +43,7 @@ namespace Mangetsu\Tests\BBCode;
             echo $bbcode->ConvertBBCodeToHTML($text);
             
             echo "<br/>";
-            echo "<br/>";
+            echo "<br/> <hr>";
             
             $text = file_get_contents('bbcodeTest02.txt' );
             echo $bbcode->ConvertBBCodeToHTML($text);
