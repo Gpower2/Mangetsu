@@ -333,17 +333,63 @@ namespace Mangetsu\Library\Database
             return $escapedString;
         }
         
-        public function SqlGetArray($argSql)
+        
+        public function SqlGetArray($argSql, $argClassName = '')
         {
-            $this->checkDatabaseManager();
-            
-            
+            $this->checkDatabaseManager();            
+            $result = $this->_DatabaseHandler->query($argSql);
+            if ($result) 
+            {
+                // Create the final result array to return to the user
+                $finalArray = array();
+                
+                // check if user provided with $argClassName
+                if($argClassName == '')
+                {
+                    // we don't have an object definition, so fetch an array
+                    while($row = $result->fetch_array(MYSQLI_ASSOC))
+                    {
+                        $finalArray[] = $row;
+                    }                    
+                }
+                else
+                {
+                    // we have an object definition, so fetch an object
+                    while ($obj = $result->fetch_object($argClassName)) 
+                    {
+                        $finalArray[] = $obj;
+                    }                    
+                }
+                // free result set
+                $result->close();                
+                return $finalArray;
+            }
+            else
+            {
+                throw new Exception("Error on query!");
+            }            
         }
         
         public function SqlGetSingleValue($argSql)
         {
             $this->checkDatabaseManager();
-            
+            $result = $this->_DatabaseHandler->query($argSql);
+            if ($result) 
+            {
+                $row = $result->fetch_array(MYSQLI_NUM);
+                if($row !== NULL)
+                {
+                    return $row[0];
+                }
+                else
+                {
+                    return NULL;
+                }
+            }
+            else
+            {
+                throw new Exception("Error on query!");
+            }
         }
         
         public function SqlExecute($argSql)

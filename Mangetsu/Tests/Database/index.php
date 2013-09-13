@@ -12,6 +12,8 @@ namespace Mangetsu\Tests\Database
     });
     
     $dbManager = new \Mangetsu\Library\Database\DatabaseManager("localhost", "root", "root", "animeclipse");
+    echo '<pre>';
+    
     echo 'HostInfo: '.$dbManager->GetHostInfo() . '<br />';
     echo 'ClientInfo: '.$dbManager->GetClientInfo() . '<br />';
     echo 'ClientVersion: '.$dbManager->GetClientVersion() . '<br />';
@@ -41,7 +43,14 @@ namespace Mangetsu\Tests\Database
     echo 'Connection Statistics: ';
     print_r($dbManager->GetConnectionStatistics());
     
+    echo 'Test SqlGetArray query: ';
+    print_r($dbManager->SqlGetArray("SELECT * FROM phpbb_users LIMIT 0, 40"));
+    
+    echo 'Test SqlGetSingleValue query: ';
+    print_r($dbManager->SqlGetSingleValue("SELECT COUNT(*) FROM phpbb_users"));
+    
     $dbManager->KillCurrentDatabaseHandler();
     $dbManager->Ping();
     
+    echo '</pre>';
 }
