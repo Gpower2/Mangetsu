@@ -3,6 +3,11 @@ namespace Mangetsu\Library\BBCode;
 {   
     class BBCodeHelper 
     {
+        /**
+         * Parses the text and replaces all the BBCode tags with html code.
+         * @param string $argBBCodeText
+         * @return string
+         */
         public function ConvertBBCodeToHTML($argBBCodeText)
         {
             $bbtags = array
@@ -133,22 +138,36 @@ namespace Mangetsu\Library\BBCode;
             );
                        
             // Code
-            $argBBCodeText = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>".$this->disableBBCodeTags(\'$1\')."</code></div></div>"', $argBBCodeText);
+            $finalString = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', 
+                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>".$this->disableBBCodeTags(\'$1\')."</code></div></div>"', 
+                    $argBBCodeText);
             
             // Quote
-            $argBBCodeText = str_replace('[quote]', '<blockquote><div class="quote"><div class="quote_title">Quote:</div><div class="quote_text">', $argBBCodeText);
-            $argBBCodeText = preg_replace('#\[quote=("|"|\'|)(.*)\\1\]#seU', '"<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote By: ".str_replace(array(\'[\', \'\\"\'), array(\'[\', \'"\'), \'$2\')."</div><div class=\"quote_text\">"', $argBBCodeText);
-            $argBBCodeText = preg_replace('#\[\/quote\]\s*#', '</div></div></blockquote>', $argBBCodeText);
+            $finalString = str_replace('[quote]', 
+                    '<blockquote><div class="quote"><div class="quote_title">Quote:</div><div class="quote_text">', 
+                    $finalString);
+            $finalString = preg_replace('#\[quote=("|"|\'|)(.*)\\1\]#seU', 
+                    '"<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote By: ".str_replace(array(\'[\', \'\\"\'), array(\'[\', \'"\'), \'$2\')."</div><div class=\"quote_text\">"', 
+                    $finalString);            
+            $finalString = preg_replace('#\[\/quote\]\s*#', 
+                    '</div></div></blockquote>', 
+                    $finalString);
             
-            $argBBCodeText = preg_replace(array_keys($bbtags), array_values($bbtags), $argBBCodeText);
+            $finalString = preg_replace(array_keys($bbtags), array_values($bbtags), $finalString);
             
             // put back the bbcode parenthesis
-            $argBBCodeText = $this->enableBBCodeTags($argBBCodeText);
+            $finalString = $this->enableBBCodeTags($finalString);
+            
             // Gpower2: we should return valid HTML here
-            return nl2br($argBBCodeText);
+            return nl2br($finalString);
         }
         
-        //Disabling BBcode
+        /**
+         * Disables the BBCode tags, by replacing the brackets characters []
+         * with their html entities equivalents &#91; &#93;
+         * @param string $argText the text containing BBCode tags
+         * @return string
+         */
         private function disableBBCodeTags($argText)
         { 
             $search = array('[', ']');
@@ -156,6 +175,12 @@ namespace Mangetsu\Library\BBCode;
             return str_replace($search, $replace, $argText);
         }
         
+        /**
+         * Enables the BBCode tags, by replacing the html entities &#91; &#93;
+         * with the brackets characters []
+         * @param string $argText the text containing the html entities &#91; &#93;
+         * @return string
+         */
         private function enableBBCodeTags($argText)
         {
             $search = array('&#91;', '&#93;');
@@ -163,8 +188,12 @@ namespace Mangetsu\Library\BBCode;
             return str_replace($search, $replace, $argText);
         }
 
-        // Clearing BBcode
-        public function StripBBCodes($argText) 
+        /**
+         * Strips the text from all the BBCode tags
+         * @param string $argText the text containing the BBCode tags
+         * @return string
+         */
+        public function StripBBCodeTags($argText) 
         { 
             $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
             $replace = '';
