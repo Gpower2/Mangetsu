@@ -54,15 +54,65 @@ namespace Mangetsu\Library\BBCode;
                 '/(?<!\\\\)\[justify(?::\w+)?\](.*?)\[\/justify(?::\w+)?\]/si' 
                     => '<div class="justify">\1</div>', // Stretches the lines so that each line has equal width
                 
-                
-                // TODO: change this inline styles! We don't want specific sizes or colors or fonts!
-                '/(?<!\\\\)\[font(?::\w+)?=(.*?)\](.*?)\[\/font(?::\w+)?\]/si' 
-                    => "<font face=\"\\1\">\\2</font>", // Font                
-                /* The only tag that I didn't do in style classes or html markup tags because we want it in pixels */
-                '/(?<!\\\\)\[size(?::\w+)?=(.*?)\](.*?)\[\/size(?::\w+)?\]/si' 
-                    => "<span style=\"font-size:\\1\px;\">\\2</span>", // Size of font
-                '/(?<!\\\\)\[color(?::\w+)?=(.*?)\](.*?)\[\/color(?::\w+)?\]/si' 
-                    => "<font color=\"\\1\">\\2</font>", // Color of font
+                // Font Names
+                '/(?<!\\\\)\[font(?::\w+)?=Arial\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"arial\">\\1</span>", // Arial
+                '/(?<!\\\\)\[font(?::\w+)?=Georgia\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"georgia\">\\1</span>", // Georgia
+                '/(?<!\\\\)\[font(?::\w+)?=Impact\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"impact\">\\1</span>", // Impact
+                '/(?<!\\\\)\[font(?::\w+)?=Symbol\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"symbol\">\\1</span>", // Symbol
+                '/(?<!\\\\)\[font(?::\w+)?=Tahoma\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"tahoma\">\\1</span>", // Tahoma
+                '/(?<!\\\\)\[font(?::\w+)?=Times New Roman\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"tnr\">\\1</span>", // Times New Roman
+                '/(?<!\\\\)\[font(?::\w+)?=Verdana\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"verdana\">\\1</span>", // Verdana
+                '/(?<!\\\\)\[font(?::\w+)?=Webdings\](.*?)\[\/font(?::\w+)?\]/si'
+                    => "<span class=\"webdings\">\\1</span>", // Webdings
+                // Font Colors
+                '/(?<!\\\\)\[color(?::\w+)?=Black\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"black\">\\1</span>", // Black
+                '/(?<!\\\\)\[color(?::\w+)?=DarkBlue\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"darkblue\">\\1</span>", // DarkBlue
+                '/(?<!\\\\)\[color(?::\w+)?=Blue\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"blue\">\\1</span>", // Blue
+                '/(?<!\\\\)\[color(?::\w+)?=DarkRed\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"darkred\">\\1</span>", // DarkRed
+                '/(?<!\\\\)\[color(?::\w+)?=Red\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"red\">\\1</span>", // Red
+                '/(?<!\\\\)\[color(?::\w+)?=Brown\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"brown\">\\1</span>", // Brown
+                '/(?<!\\\\)\[color(?::\w+)?=Orange\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"orange\">\\1</span>", // Orange
+                '/(?<!\\\\)\[color(?::\w+)?=Olive\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"olive\">\\1</span>", // Olive
+                '/(?<!\\\\)\[color(?::\w+)?=Green\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"green\">\\1</span>", // Green
+                '/(?<!\\\\)\[color(?::\w+)?=Yellow\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"yellow\">\\1</span>", // Yellow
+                '/(?<!\\\\)\[color(?::\w+)?=Indigo\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"indigo\">\\1</span>", // Indigo
+                '/(?<!\\\\)\[color(?::\w+)?=Violet\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"violet\">\\1</span>", // Violet
+                '/(?<!\\\\)\[color(?::\w+)?=Cyan\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"cyan\">\\1</span>", // Cyan
+                '/(?<!\\\\)\[color(?::\w+)?=White\](.*?)\[\/color(?::\w+)?\]/si' 
+                    => "<span class=\"white\">\\1</span>", // White
+                // Font Sizes
+                '/(?<!\\\\)\[size(?::\w+)?=7\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"tiny\">\\1</span>", // Tiny
+                '/(?<!\\\\)\[size(?::\w+)?=9\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"small\">\\1</span>", // Small
+                '/(?<!\\\\)\[size(?::\w+)?=12\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"normal\">\\1</span>", // Normal
+                '/(?<!\\\\)\[size(?::\w+)?=18\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"medium\">\\1</span>", // Medium
+                '/(?<!\\\\)\[size(?::\w+)?=24\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"large\">\\1</span>", // Large
+                '/(?<!\\\\)\[size(?::\w+)?=30\](.*?)\[\/size(?::\w+)?\]/si'
+                    => "<span class=\"huge\">\\1</span>", // Huge
 
                 /* We only use code for <pre></pre> tags
                  * We don't want to allow preformatted text otherwise
@@ -123,7 +173,7 @@ namespace Mangetsu\Library\BBCode;
                 // Spoiler
                 // TODO: use of unobtrusive javascript (no onclick assignment)
                 '/(?<!\\\\)\[spoiler(?::\w+)?\](.*?)\[\/spoiler(?::\w+)?\]/si' 
-                    => "<div class=\"spoiler\"><input class=\"button\" type=\"button\" value=\"Εμφάνιση Spoiler\" onclick=\"this.value=this.value=='Εμφάνιση Spoiler'?'Απόκρυψη Spoiler':'Εμφάνιση Spoiler';\"></div><div class=\"content\"><div class=\"text\">\\1</div></div>", // Spoiler
+                    => "<div class=\"spoiler\"><input id=\"spoiler_button\" class=\"button\" type=\"button\" value=\"Εμφάνιση Spoiler\"></div><div class=\"content\"><div class=\"text\">\\1</div></div>", // Spoiler
                 
                 /* Gpower2: We don't want to support moving text
                 // Moving text
@@ -139,7 +189,7 @@ namespace Mangetsu\Library\BBCode;
                        
             // Code
             $finalString = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', 
-                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>".$this->disableBBCodeTags(\'$1\')."</code></div></div>"', 
+                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>".$this->disableBBCodeTags("$1")."</code></div></div>"', 
                     $argBBCodeText);
             
             // Quote

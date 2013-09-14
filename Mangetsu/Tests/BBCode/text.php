@@ -48,6 +48,13 @@ namespace Mangetsu\Tests\BBCode;
             $text = file_get_contents('bbcodeTest02.txt' );
             echo $bbcode->ConvertBBCodeToHTML($text);
         ?>
+        <!-- Spoiler Button JS Script -->
+        <script>
+            document.getElementById('spoiler_button').onclick = function(){
+            this.value = this.value === 'Εμφάνιση Spoiler' ? 'Απόκρυψη Spoiler' : 'Εμφάνιση Spoiler';
+            };
+        </script>
+        <!-- End of Spoiler Button JS Script -->
         <br/>
         <a href="index.php">Back</a>
     </body>

@@ -9,6 +9,37 @@ div.right {text-align: right;}
 div.center {text-align: center;}
 div.justify {text-align: justify;}
 span.strikethrough {text-decoration: line-through;}
+/* Font Names */
+span.arial {font-family: Arial;}
+span.georgia {font-family: Georgia;}
+span.impact {font-family: Impact;}
+span.symbol {font-family: Symbol;}
+span.tahoma {font-family: Tahoma;}
+span.tnr {font-family: Times New Roman;}
+span.verdana {font-family: Verdana;}
+span.webdings {font-family: Webdings;}
+/* Font Colors */
+span.black {color: black;}
+span.darkblue {color: darkblue;}
+span.blue {color: blue;}
+span.darkred {color: darkred;}
+span.red {color: red;}
+span.brown {color: brown;}
+span.orange {color: orange;}
+span.olive {color: olive;}
+span.green {color: green;}
+span.yellow {color: yellow;}
+span.indigo {color: indigo;}
+span.violet {color: violet;}
+span.cyan {color: cyan;}
+span.white {color: white;}
+/* Font Sizes */
+span.tiny {font-size: 7px;}
+span.small {font-size: 9px;}
+span.normal {font-size: 12px;}
+span.medium {font-size: 18px;}
+span.large {font-size: 24px;}
+span.huge {font-size: 30px;}
 
 /* Lists */
 ol.list_by_1 {list-style-type: decimal;}
