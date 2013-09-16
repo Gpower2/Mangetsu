@@ -189,7 +189,7 @@ namespace Mangetsu\Library\BBCode;
                        
             // Code
             $finalString = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', 
-                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>".$this->disableBBCodeTags("$1")."</code></div></div>"', 
+                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
                     $argBBCodeText);
             
             // Quote
@@ -197,7 +197,7 @@ namespace Mangetsu\Library\BBCode;
                     '<blockquote><div class="quote"><div class="quote_title">Quote:</div><div class="quote_text">', 
                     $finalString);
             $finalString = preg_replace('#\[quote=("|"|\'|)(.*)\\1\]#seU', 
-                    '"<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote By: ".str_replace(array(\'[\', \'\\"\'), array(\'[\', \'"\'), \'$2\')."</div><div class=\"quote_text\">"', 
+                    '"<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote By: " . str_replace(array(\'[\', \'\\"\'), array(\'[\', \'"\'), \'$2\') . "</div><div class=\"quote_text\">"', 
                     $finalString);            
             $finalString = preg_replace('#\[\/quote\]\s*#', 
                     '</div></div></blockquote>', 
@@ -248,6 +248,29 @@ namespace Mangetsu\Library\BBCode;
             $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
             $replace = '';
             return preg_replace($pattern, $replace, $argText);
+        }
+        
+        /**
+         * Check the text for valid pairs of BBCode tags.
+         * @param string $argText
+         */
+        public function CheckBBCodes($argText)
+        {   
+            // TODO: check for tags that have valid pairs
+            // eg: 
+            // 
+            // $openQuoteTagCounter = preg_math_all(...);
+            // $closeQuoteTagCounter = preg_math_all(...);
+            // if($openQuoteTagCounter > $closeQuoteTagCounter)
+            // {
+            //      throw new /Exception("There are more open quote tags than close quote tags!");
+            // }
+            // if($closeQuoteTagCounter > $openQuoteTagCounter)
+            // {
+            //      throw new /Exception("There are more close quote tags than open quote tags!");
+            // }
+            // 
+            // The same must be done for all the BBCode tags that require pairs
         }
     }
 }
