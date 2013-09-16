@@ -48,6 +48,23 @@ namespace Mangetsu\Tests\Database
     
     echo 'Test SqlGetSingleValue query: ';
     print_r($dbManager->SqlGetSingleValue("SELECT COUNT(*) FROM phpbb_users"));
+    echo '<br />';
+    
+    try
+    {
+        echo 'Test SqlMultiExecute query: ';
+        //$dbManager->SqlMultiExecute("INSERT INTO mkp_link_types VALUES('test01');INSERT INTO mkp_link_types VALUES('test02'); DELETE FROM mkp_link_types WHERE id > 2");        
+        $arraySql = array();
+        $arraySql[] = "INSERT INTO mkp_link_types (name) VALUES('test01')";
+        $arraySql[] = "INSERT INTO mkp_link_types VALUES('test02')";
+        $arraySql[] = "DELETE FROM mkp_link_types WHERE id > 2";
+        $dbManager->SqlMultiExecute($arraySql);
+    }
+    catch (\Exception $exc)
+    {
+        echo '<br />' . $exc->getMessage() . '<br />';
+        echo '<br />' . $exc->getTraceAsString() . '<br />';
+    }
     
     $dbManager->KillCurrentDatabaseHandler();
     $dbManager->Ping();

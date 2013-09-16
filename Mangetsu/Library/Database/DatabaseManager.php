@@ -91,6 +91,8 @@ namespace Mangetsu\Library\Database
                     throw new \Exception("Could not connect to database! Error code: " . 
                             $errorCode . ". Error message: " . $errorMessage);
                 }
+                // set autocommit to on
+                $this->_DatabaseHandler->autocommit(TRUE);
             }
         }
         
@@ -331,8 +333,7 @@ namespace Mangetsu\Library\Database
                 $escapedString = addcslashes($escapedString, '%_');
             }
             return $escapedString;
-        }
-        
+        }        
         
         public function SqlGetArray($argSql, $argClassName = '')
         {
@@ -366,7 +367,7 @@ namespace Mangetsu\Library\Database
             }
             else
             {
-                throw new Exception("Error on query!");
+                throw new \Exception("Error on query!");
             }            
         }
         
@@ -388,24 +389,93 @@ namespace Mangetsu\Library\Database
             }
             else
             {
-                throw new Exception("Error on query!");
+                throw new \Exception("Error on query:\r\n" . $this->GetErrorMessage() . "\r\n" . "SQL query:\r\n" . $argSql);
             }
         }
         
         public function SqlExecute($argSql)
         {
             $this->checkDatabaseManager();
-            
+            // DML queries don't return a result set
+            if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
+            {
+                throw new \Exception("Error on query:\r\n" . $this->GetErrorMessage() . "\r\n" . "SQL query:\r\n" . $argSql);
+            }
         }
         
-        public function SqlMultiExecute($argSql)
+        public function SqlMultiExecute($argSqlArray)
         {
             $this->checkDatabaseManager();
             // ALWAYS USE TRANSACTION!!!
             
+            // set autocommit to off
+            $this->_DatabaseHandler->autocommit(FALSE);
             
-        }
-        
-        
+            // iterrate through all the sql queries
+            foreach ($argSqlArray as $argSql)
+            {
+                // Execute the query and check for errors
+                if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
+                {
+                    $errorMessage = $this->GetErrorMessage();
+                    // rollback the transaction
+                    $this->_DatabaseHandler->rollback();
+                    // set autocommit to on
+                    $this->_DatabaseHandler->autocommit(TRUE);
+                    // throw the exception
+                    throw new \Exception("Error on query:\r\n" . $errorMessage . "\r\n" . "SQL query:\r\n" . $argSql);
+                }
+            }
+            // if we got here without an exception, everything went according to plan
+            // commit transaction
+            $this->_DatabaseHandler->commit();
+            
+            // set autocommit to on
+            $this->_DatabaseHandler->autocommit(TRUE);            
+            
+            /* The same using multi_query method
+             * 
+            // execute multi query
+            if ($this->_DatabaseHandler->multi_query($argSql)) 
+            {
+                do 
+                {
+                    // We only support DML queries, so we don't need the result object
+                    // Check to see if there are more results (actually, more queries)
+                    if ($this->_DatabaseHandler->more_results()) 
+                    {
+                        // Check to see if there is an error
+                        if(!$this->_DatabaseHandler->next_result())
+                        {
+                            // rollback the transaction
+                            $this->_DatabaseHandler->rollback();
+                            // set autocommit to on
+                            $this->_DatabaseHandler->autocommit(TRUE);
+                            // throw the exception
+                            echo $this->GetErrorMessage();
+                            throw new \Exception("Error on query!");                            
+                        }
+                    }                    
+                } while (TRUE);
+            }
+            else
+            {
+                echo $this->GetErrorMessage();
+                // rollback transaction
+                $this->_DatabaseHandler->rollback();
+                // set autocommit to on
+                $this->_DatabaseHandler->autocommit(TRUE);
+                // throw the exception                
+                throw new \Exception("Error on query!");
+            }
+            
+            // commit transaction
+            $this->_DatabaseHandler->commit();
+            
+            // set autocommit to on
+            $this->_DatabaseHandler->autocommit(TRUE);
+             * 
+             */
+        }        
     }
 }
