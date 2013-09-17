@@ -62,8 +62,7 @@ namespace Mangetsu\Tests\Database
     }
     catch (\Exception $exc)
     {
-        echo '<br />' . $exc->getMessage() . '<br />';
-        echo '<br />' . $exc->getTraceAsString() . '<br />';
+        echo '<br />' . $exc . '<br />';
     }
     
     $dbManager->KillCurrentDatabaseHandler();

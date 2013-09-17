@@ -88,8 +88,7 @@ namespace Mangetsu\Library\Database
                     // set the database handler object to null
                     $this->_DatabaseHandler = null;
                     // throw the exception
-                    throw new \Exception("Could not connect to database! Error code: " . 
-                            $errorCode . ". Error message: " . $errorMessage);
+                    throw new \Mangetsu\Library\Database\DatabaseException("Could not connect to database!", $errorCode, $errorMessage);
                 }
                 // set autocommit to on
                 $this->_DatabaseHandler->autocommit(TRUE);
@@ -335,6 +334,16 @@ namespace Mangetsu\Library\Database
             return $escapedString;
         }        
         
+        /**
+         * Returns the result of a non DML SQL query in an array of objects or 
+         * an associative array.
+         * If the user specifies a class name, then the array contains objects
+         * of that class type, otherwise a simple associative array is returned.
+         * @param string $argSql the non DML SQL query to execute
+         * @param string $argClassName the class name of the objects to be created
+         * @return array the results
+         * @throws \Mangetsu\Library\Database\DatabaseException
+         */
         public function SqlGetArray($argSql, $argClassName = '')
         {
             $this->checkDatabaseManager();            
@@ -367,10 +376,18 @@ namespace Mangetsu\Library\Database
             }
             else
             {
-                throw new \Exception("Error on query!");
+                throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }            
         }
         
+        /**
+         * Returns a single value from a non DML SQL query.
+         * If the results of the query are more than one, only the first one
+         * will be returned and the others will be ignored.
+         * @param string $argSql the non DML SQL query to execute
+         * @return string
+         * @throws \Mangetsu\Library\Database\DatabaseException
+         */
         public function SqlGetSingleValue($argSql)
         {
             $this->checkDatabaseManager();
@@ -380,7 +397,9 @@ namespace Mangetsu\Library\Database
                 $row = $result->fetch_array(MYSQLI_NUM);
                 if($row !== NULL)
                 {
-                    return $row[0];
+                    $returnResult = $row[0];
+                    $result->close();
+                    return $returnResult;
                 }
                 else
                 {
@@ -389,20 +408,30 @@ namespace Mangetsu\Library\Database
             }
             else
             {
-                throw new \Exception("Error on query:\r\n" . $this->GetErrorMessage() . "\r\n" . "SQL query:\r\n" . $argSql);
+                throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }
         }
         
+        /**
+         * Executes a DML SQL query to the database.
+         * @param string $argSql the DML SQL query to execute
+         * @throws \Mangetsu\Library\Database\DatabaseException
+         */
         public function SqlExecute($argSql)
         {
             $this->checkDatabaseManager();
             // DML queries don't return a result set
             if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
             {
-                throw new \Exception("Error on query:\r\n" . $this->GetErrorMessage() . "\r\n" . "SQL query:\r\n" . $argSql);
+                throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }
         }
         
+        /**
+         * Executes a series of DML SQL queries 
+         * @param string $argSqlArray
+         * @throws \Mangetsu\Library\Database\DatabaseException
+         */
         public function SqlMultiExecute($argSqlArray)
         {
             $this->checkDatabaseManager();
@@ -418,12 +447,13 @@ namespace Mangetsu\Library\Database
                 if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
                 {
                     $errorMessage = $this->GetErrorMessage();
+                    $errorCode = $this->GetErrorCode();
                     // rollback the transaction
                     $this->_DatabaseHandler->rollback();
                     // set autocommit to on
                     $this->_DatabaseHandler->autocommit(TRUE);
                     // throw the exception
-                    throw new \Exception("Error on query:\r\n" . $errorMessage . "\r\n" . "SQL query:\r\n" . $argSql);
+                    throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
                 }
             }
             // if we got here without an exception, everything went according to plan
@@ -432,9 +462,21 @@ namespace Mangetsu\Library\Database
             
             // set autocommit to on
             $this->_DatabaseHandler->autocommit(TRUE);            
+        }   
+        
+        /**
+         * 
+         * @param string $argSql
+         * @throws \Mangetsu\Library\Database\DatabaseException
+         */
+        public function SqlMultiExecuteAlternative($argSql)
+        {
+            $this->checkDatabaseManager();
+            // ALWAYS USE TRANSACTION!!!
             
-            /* The same using multi_query method
-             * 
+            // set autocommit to off
+            $this->_DatabaseHandler->autocommit(FALSE);
+            
             // execute multi query
             if ($this->_DatabaseHandler->multi_query($argSql)) 
             {
@@ -447,35 +489,34 @@ namespace Mangetsu\Library\Database
                         // Check to see if there is an error
                         if(!$this->_DatabaseHandler->next_result())
                         {
+                            $errorMessage = $this->GetErrorMessage();
+                            $errorCode = $this->GetErrorCode();
                             // rollback the transaction
                             $this->_DatabaseHandler->rollback();
                             // set autocommit to on
                             $this->_DatabaseHandler->autocommit(TRUE);
                             // throw the exception
-                            echo $this->GetErrorMessage();
-                            throw new \Exception("Error on query!");                            
+                            throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
                         }
                     }                    
                 } while (TRUE);
             }
             else
             {
-                echo $this->GetErrorMessage();
+                $errorMessage = $this->GetErrorMessage();
+                $errorCode = $this->GetErrorCode();
                 // rollback transaction
                 $this->_DatabaseHandler->rollback();
                 // set autocommit to on
                 $this->_DatabaseHandler->autocommit(TRUE);
                 // throw the exception                
-                throw new \Exception("Error on query!");
-            }
-            
+                throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
+            }            
             // commit transaction
             $this->_DatabaseHandler->commit();
             
             // set autocommit to on
             $this->_DatabaseHandler->autocommit(TRUE);
-             * 
-             */
-        }        
+        }
     }
 }
