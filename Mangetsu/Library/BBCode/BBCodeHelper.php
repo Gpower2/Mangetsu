@@ -171,7 +171,6 @@ namespace Mangetsu\Library\BBCode;
                     => '<embed width="420" height="345" src="http://www.youtube.com/v/\1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true">', // Embed youtube videos
                 
                 // Spoiler
-                // TODO: use of unobtrusive javascript (no onclick assignment)
                 '/(?<!\\\\)\[spoiler(?::\w+)?\](.*?)\[\/spoiler(?::\w+)?\]/si' 
                     => "<div class=\"spoiler\"><input id=\"spoiler_button\" class=\"button\" type=\"button\" value=\"Εμφάνιση Spoiler\"></div><div class=\"content\"><div class=\"text\">\\1</div></div>", // Spoiler
                 
@@ -256,21 +255,100 @@ namespace Mangetsu\Library\BBCode;
          */
         public function CheckBBCodes($argText)
         {   
-            // TODO: check for tags that have valid pairs
-            // eg: 
-            // 
-            // $openQuoteTagCounter = preg_math_all(...);
-            // $closeQuoteTagCounter = preg_math_all(...);
-            // if($openQuoteTagCounter > $closeQuoteTagCounter)
-            // {
-            //      throw new /Exception("There are more open quote tags than close quote tags!");
-            // }
-            // if($closeQuoteTagCounter > $openQuoteTagCounter)
-            // {
-            //      throw new /Exception("There are more close quote tags than open quote tags!");
-            // }
-            // 
-            // The same must be done for all the BBCode tags that require pairs
+            // Check for tags that have valid pairs
+
+            // Quote tag check
+            $openQuoteTagCounter  = preg_match_all('#\[quote\]#i', $argText);
+            $openQuoteNameTagCounter  = preg_match_all('#\[quote=("|"|\'|)(.*)\\1\]#seU', $argText);
+            $closeQuoteTagCounter = preg_match_all('#\[/quote\]#i', $argText);
+            if($openQuoteTagCounter > $closeQuoteTagCounter & $openQuoteNameTagCounter == 0)
+            {
+                 throw new \Exception("There are more open quote tags than close quote tags!");
+            }
+            if($closeQuoteTagCounter > $openQuoteTagCounter & $openQuoteNameTagCounter == 0)
+            {
+                 throw new \Exception("There are more close quote tags than open quote tags!");
+            }
+            if($openQuoteNameTagCounter > $closeQuoteTagCounter & $openQuoteTagCounter == 0)
+            {
+                 throw new \Exception("There are more open quote tags than close quote tags!");
+            }
+            if($closeQuoteTagCounter > $openQuoteNameTagCounter & $openQuoteTagCounter == 0)
+            {
+                 throw new \Exception("There are more close quote tags than open quote tags!");
+            }
+            
+            // Bold tag check
+            $openBoldTagCounter  = preg_match_all('#\[b\]#i', $argText);
+            $closeBoldTagCounter = preg_match_all('#\[/b\]#i', $argText);
+            if($openBoldTagCounter > $closeBoldTagCounter)
+            {
+                 throw new \Exception("There are more open bold tags than close bold tags!");
+            }
+            if($closeBoldTagCounter > $openBoldTagCounter)
+            {
+                 throw new \Exception("There are more close bold tags than open bold tags!");
+            }
+            
+            // Italic tag check
+            $openItalicTagCounter  = preg_match_all('#\[i\]#i', $argText);
+            $closeItalicTagCounter = preg_match_all('#\[/i\]#i', $argText);
+            if($openItalicTagCounter > $closeItalicTagCounter)
+            {
+                 throw new \Exception("There are more open italic tags than close italic tags!");
+            }
+            if($closeItalicTagCounter > $openItalicTagCounter)
+            {
+                 throw new \Exception("There are more close italic tags than open italic tags!");
+            }
+            
+            // Underline tag check
+            $openUnderlineTagCounter  = preg_match_all('#\[u\]#i', $argText);
+            $closeUnderlineTagCounter = preg_match_all('#\[/u\]#i', $argText);
+            if($openUnderlineTagCounter > $closeUnderlineTagCounter)
+            {
+                 throw new \Exception("There are more open underline tags than close underline tags!");
+            }
+            if($closeUnderlineTagCounter > $openUnderlineTagCounter)
+            {
+                 throw new \Exception("There are more close underline tags than open underline tags!");
+            }
+            
+            // YouTube tag check
+            $openYouTubeTagCounter  = preg_match_all('#\[you_tube\]#i', $argText);
+            $closeYouTubeTagCounter = preg_match_all('#\[/you_tube\]#i', $argText);
+            if($openYouTubeTagCounter > $closeYouTubeTagCounter)
+            {
+                 throw new \Exception("There are more open youtube tags than close youtube tags!");
+            }
+            if($closeYouTubeTagCounter > $openYouTubeTagCounter)
+            {
+                 throw new \Exception("There are more close youtube tags than open youtube tags!");
+            }
+            
+            // Code tag check
+            $openCodeTagCounter  = preg_match_all('#\[code\]#i', $argText);
+            $closeCodeTagCounter = preg_match_all('#\[/code\]#i', $argText);
+            if($openCodeTagCounter > 0 & $closeCodeTagCounter == 0)
+            {
+                 throw new \Exception("There are only open code tags!");
+            }
+            if($closeCodeTagCounter > 0 & $openCodeTagCounter == 0)
+            {
+                 throw new \Exception("There are only close code tags!");
+            }
+            
+            // Spoiler tag check
+            $openSpoilerTagCounter  = preg_match_all('#\[spoiler\]#i', $argText);
+            $closeSpoilerTagCounter = preg_match_all('#\[/spoiler\]#i', $argText);
+            if($openSpoilerTagCounter > $closeSpoilerTagCounter)
+            {
+                 throw new \Exception("There are more open spoiler tags than close spoiler tags!");
+            }
+            if($closeSpoilerTagCounter > $openSpoilerTagCounter)
+            {
+                 throw new \Exception("There are more close spoiler tags than open spoiler tags!");
+            }            
         }
     }
 }
