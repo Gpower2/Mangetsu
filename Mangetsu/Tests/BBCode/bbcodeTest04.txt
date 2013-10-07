@@ -1,0 +1,38 @@
+﻿[quote]
+	This is a quote:
+	[quote=Gpower2]
+		This is a named quote:
+		[quote=tolias63]
+			This is a simple list:
+			[list]
+			[*]
+				This is a malformed list:
+				[list=]
+				[*]
+					This is an ordered list:
+					[list=1]
+						[*]
+						This is a code statement:
+						[code]
+							Testing simple code.
+						[/code]
+						This is a nested code statement:
+						[code]
+							First level:
+							[code]
+								Second level
+								It contains a quote:
+								[quote]
+									That it contains a code:
+									[code]
+										Code inside a quote
+									[/code]
+								[/quote]
+							[/code]
+						[/code]
+					[/list]
+				[/list]
+			[/list]
+		[/quote]
+	[/quote]
+[/quote]

@@ -187,9 +187,17 @@ namespace Mangetsu\Library\BBCode;
             );
                        
             // Code
+            /*
+             * Original code that crashed(!!) Apache
             $finalString = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', 
                     '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
                     $argBBCodeText);
+            */
+            // New code that doesn't crash Apache
+            $finalString = preg_replace('#\[code\](.*)\[\/code\]#se', 
+                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
+                    $argBBCodeText);
+            
             
             // Quote
             $finalString = str_replace('[quote]', 

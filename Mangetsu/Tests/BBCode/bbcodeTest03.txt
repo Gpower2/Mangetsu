@@ -1,0 +1,36 @@
+﻿Παίδες τελείωσα με το filtering για το raw από Zero, χρησιμοποίησα και κάποια updated φίλτρα για το AviSynth, γενικά νομίζω ότι βγήκε πολύ καλό το αποτέλεσμα σε όσες σκηνές το δοκίμασα.
+Έκανα και αντιπαράθεση με το rls των FroZen και διαπίστωσα ότι τα τσακαλάκια έχουν χρησιμοποιήσει TS raw, τι να κάνουμε, έχουν τα μέσα τα παλικάρια...
+Ωστόσο, έχουν αφήσει πάρα πολύ ringing, μάλλον από oversharpening με αποτέλεσμα να θεωρώ ότι έχουμε ελαφρώς καλύτερο αποτέλεσμα από αυτούς, δεδομένου κι όλας ότι έχουμε χαμηλότερης ποιότητας raw.
+
+Τα φίλτρα για το AviSynth: [url]http://projects.animeclipse.com/02/HNI_Rising/Filtering/%5b20131007%5dAviSynth_plugins.7z[/url]
+
+Το script για το filtering: [url]http://projects.animeclipse.com/02/HNI_Rising/Filtering/%5bZero-Raws%5d%20Hajime%20no%20Ippo%20Rising%20-%2001%20(NTV%201280x720%20x264%20AAC).avs[/url]
+
+Και ο κώδικας του filtering εδώ:
+[code]flash3kyuu_deband(Y=16, Cb=16)
+levels(10, 1.1, 240, 0, 255, coring=false)
+flash3kyuu_deband(Y=16, Cb=16)
+
+RemoveGrain().RemoveGrain()
+fluxsmoothst()
+
+dfttest(sigma=4, sigma2=4)
+
+ysharp(1.0)
+FastLineDarkenMOD(strength=64, thinning=0)
+lsfmod(defaults="slow", strength=150)
+aWarpSharp2(type=1, blur=2, depth=4, chroma=3)[/code]
+
+Πάρι καλό είναι να κρατήσεις ένα backup από τον φάκελο plugins του AviSynth σου, και κάν'τον replace με τον φάκελο που έχει μέσα το 7z.
+
+Υ.Γ.
+Τελικά ανοίγοντας τους φακέλους από SE και το παλιό HnI, διαπίστωσα ότι επικρατεί το ίδιο χάλι, οπότε προτίμησα να ανοίξω φάκελο στο παλιό HnI και έτσι έχουμε τον φάκελο:
+
+http://projects.animeclipse.com/02/HNI_Rising
+
+Οι μεταφραστές καλό είναι να συμβουλευτούν την ορολογία όπως έχει διαμορφωθεί μέχρι στιγμής εδώ:
+http://www.animeclipse.com/phpbb2/viewtopic.php?t=4858
+
+και ότι καινούριο όρο βρουν να τον ποστάρουν εδώ για να τοποθετηθεί κι αυτός με τη σειρά του στο thread.
+
+Τέλος, για τα TS, πολλά είχαν γίνει για το παλιό, οπότε καλό είναι να πάρουμε τη μετάφραση από εκεί. Ο Λευτέρης λογικά θα έχει άποψη για το πού βρίσκονται αυτές οι μεταφράσεις, και θα πρότεινα να μπουν και αυτές στο αντίστοιχο thread με τις ορολογίες για να είναι όλα σε ένα σημείο...

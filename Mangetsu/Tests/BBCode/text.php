@@ -29,7 +29,7 @@ namespace Mangetsu\Tests\BBCode;
             
             //echo nl2br($bbcode->ConvertBBCodeToHTML($text) );
             // Gpower2: nl2br should not be needed, since the output is HTML
-            echo $bbcode->CheckBBCodes($text);
+            //echo $bbcode->CheckBBCodes($text);
             echo $bbcode->ConvertBBCodeToHTML($text);
             //echo nl2br($bbcode -> bbstrip($text));
             //echo nl2br($bbcode -> bbdisable($text));
@@ -48,6 +48,18 @@ namespace Mangetsu\Tests\BBCode;
             
             $text = file_get_contents('bbcodeTest02.txt' );
             echo $bbcode->ConvertBBCodeToHTML($text);
+
+            echo "<br/>";
+            echo "<br/> <hr>";
+            
+            $text = file_get_contents('bbcodeTest03.txt' );
+            echo $bbcode->ConvertBBCodeToHTML($text);
+            
+            echo "<br/>";
+            echo "<br/> <hr>";
+            
+            $text = file_get_contents('bbcodeTest04.txt' );
+            echo $bbcode->ConvertBBCodeToHTML($text);            
         ?>
         <!-- Spoiler Button JS Script -->
         <script>
