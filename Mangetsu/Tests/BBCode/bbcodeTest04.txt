@@ -1,8 +1,8 @@
 ﻿[quote]
 	This is a quote:
-	[quote=Gpower2]
+	[quote="Gpower2"]
 		This is a named quote:
-		[quote=tolias63]
+		[quote="tolias63"]
 			This is a simple list:
 			[list]
 			[*]

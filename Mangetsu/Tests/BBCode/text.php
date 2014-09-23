@@ -59,13 +59,15 @@ namespace Mangetsu\Tests\BBCode;
             echo "<br/> <hr>";
             
             $text = file_get_contents('bbcodeTest04.txt' );
-            echo $bbcode->ConvertBBCodeToHTML($text);            
+            echo $bbcode->ConvertBBCodeToHTML($text);
         ?>
         <!-- Spoiler Button JS Script -->
         <script>
-            document.getElementById('spoiler_button').onclick = function(){
-            this.value = this.value === 'Εμφάνιση Spoiler' ? 'Απόκρυψη Spoiler' : 'Εμφάνιση Spoiler';
-            };
+            Array.prototype.forEach.call(document.getElementsByName('spoiler_button'), function(button){
+            button.onclick = function(){
+                this.value = this.value === 'Εμφάνιση Spoiler' ? 'Απόκρυψη Spoiler' : 'Εμφάνιση Spoiler';
+                };
+            });
         </script>
         <!-- End of Spoiler Button JS Script -->
         <br/>

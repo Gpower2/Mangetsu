@@ -143,13 +143,13 @@ namespace Mangetsu\Library\BBCode;
                     => '<ol class="list_by_A">\1</ol>', // Defines an ordered list sort by "A"
                 '/\[list=(?::\w+)?\](.*?)\[\/list(?::\w+)?\]/si' 
                     => '<ol class="list_by_1">\1</ol>', // Defines a malformed ordered list sort by "1" 
-                
+                /*
                 // Url
                 '/(?<!\\\\)\[url(?::\w+)?\](.*?)\[\/url(?::\w+)?\]/si' 
                     => '<a href="\1" target="_blank" class="bb-url">\1</a>', // URL
                 '/(?<!\\\\)\[url(?::\w+)?=(.*?)?\](.*?)\[\/url(?::\w+)?\]/si' 
                     => '<a href="\1" target="_blank" class="bb-url">\2</a>', // URL with text
-                    
+                */
                 // Email
                 '/(?<!\\\\)\[email(?::\w+)?=(.*?)\](.*?)\[\/email(?::\w+)?\]/si' 
                     => '<a href="mailto:\1" class="bb-email">\2</a>', // Send e-mail
@@ -172,7 +172,7 @@ namespace Mangetsu\Library\BBCode;
                 
                 // Spoiler
                 '/(?<!\\\\)\[spoiler(?::\w+)?\](.*?)\[\/spoiler(?::\w+)?\]/si' 
-                    => "<div class=\"spoiler\"><input id=\"spoiler_button\" class=\"button\" type=\"button\" value=\"Εμφάνιση Spoiler\"></div><div class=\"content\"><div class=\"text\">\\1</div></div>", // Spoiler
+                    => "<div class=\"spoiler\"><input name=\"spoiler_button\" class=\"button\" type=\"button\" value=\"Εμφάνιση Spoiler\"></div><div class=\"content\"><div class=\"text\">\\1</div></div>", // Spoiler
                 
                 /* Gpower2: We don't want to support moving text
                 // Moving text
@@ -185,21 +185,59 @@ namespace Mangetsu\Library\BBCode;
                 '/(?<!\\\\)\[br(?::\w+)?\]/si' => '<br />', // Defines a single line break
                 '/(?<!\\\\)\[newline(?::\w+)?\]/si' => '<br />', // Defines a single line break
             );
-                       
+            
+            // Replace HTML characters to avoid javascript run
+            $finalString = str_replace(array('<', '>'), array('&lt;', '&gt;'), $argBBCodeText);
+            
+            // Parse links
+            $url_regex = '/(?:(?<!(\[\/url\]|\[\/url=))(\s|^))';                            // No [url]-tag in front and is start of string
+            $url_regex.= '(';                                                               // Start capturing URL
+            $url_regex.= '(https?|ftps?|ircs?):\/\/';                                       // Protocol
+            $url_regex.= '[\w\d\.\/#\_\-\?:=]+';                                            // Any non-space character
+            $url_regex.= ')';                                                               // Stop capturing URL
+            $url_regex.= '(?:(?<![.,;!?:\"\'()-])(\/|\[|\s|\.?$))/i';                       // Doesn't end with punctuation and is end of string
+            $finalString = preg_replace($url_regex,"$2[url=$3]$3[/url]$5", $finalString);
+
+            $url_regex_w = '/(?:(?<!(\[\/url\]|\[\/url=))(\s|^))';
+            $url_regex_w.= '(';
+            $url_regex_w.= 'www.';
+            $url_regex_w.= '[\w\d\.\/#\_\-\?:=]+';
+            $url_regex_w.= ')';
+            $url_regex_w.= '(?:(?<![.,;!?:\"\'()-])(\/|\[|\s|\.?$))/i';
+            $finalString = preg_replace($url_regex_w,"$2[url=$3]$3[/url]$5", $finalString);
+
+            $find = array(
+            "/\[url\=(.+?)\](.+?)\[\/url\]/is",
+            "/\[url\](.+?)\[\/url\]/is"
+            );
+
+            $replace = array(
+            "<a href=\"$1\" target=\"_blank\" class=\"bb-url\">$2</a>",
+            "<a href=\"$1\" target=\"_blank\" class=\"bb-url\">$1</a>"
+            );
+
+            $finalString = preg_replace($find, $replace, $finalString);
+            
             // Code
             /*
              * Original code that crashed(!!) Apache
             $finalString = preg_replace('#\[code\](((?R)|.)*?)\[\/code\]#se', 
                     '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
                     $argBBCodeText);
-            */
+            
             // New code that doesn't crash Apache
-            $finalString = preg_replace('#\[code\](.*?)\[\/code\]#se', 
+            $finalString = preg_replace('#\[code\](.*?)\[\/code\]#ise', 
                     '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
                     $argBBCodeText);
-            
+            */
+             // New code (V2) that doesn't crash Apache
+            $finalString = preg_replace('#\[code\](((?R)|).*?)\[\/code\]#ise', 
+                    '"<div class=\"code\"><div class=\"code_title\">Code:</div><div class=\"code_text\"><code>" . $this->disableBBCodeTags("$1") . "</code></div></div>"', 
+                    $finalString);
             
             // Quote
+            /*
+             * Old quote tag
             $finalString = str_replace('[quote]', 
                     '<blockquote><div class="quote"><div class="quote_title">Quote:</div><div class="quote_text">', 
                     $finalString);
@@ -209,12 +247,41 @@ namespace Mangetsu\Library\BBCode;
             $finalString = preg_replace('#\[\/quote\]\s*#', 
                     '</div></div></blockquote>', 
                     $finalString);
+             */
+            
+            // New quote tag
+            // Remove the new line after quotes
+            $finalString = str_replace("[/quote]\r\n", '[/quote]', $finalString);
+
+            $pattern = '/\[quote\=\"(.+?)\"\](.+?)\[\/quote\]/is';
+            $replace = "<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote By: $1</div><div class=\"quote_text\">$2</div></div></blockquote>";
+
+            while(preg_match($pattern, $finalString))
+            {
+                $finalString = preg_replace($pattern, $replace, $finalString);
+            }
+
+            $pattern = '/\[quote\](.+?)\[\/quote\]/is';
+            $replace = "<blockquote><div class=\"quote\"><div class=\"quote_title\">Quote:</div><div class=\"quote_text\">$1</div></div></blockquote>";
+
+            while(preg_match($pattern, $finalString))
+            {
+                $finalString = preg_replace($pattern, $replace, $finalString);
+            }
+            
+            // Stop lists having a big gap at the top
+            $finalString = str_replace("[ul]\r\n", '[ul]', $finalString);
+            
+            // stop there being a big gap between list items
+            $finalString = str_replace('</li><br />', '</li>', $finalString);
+
+            // stop there being a big gap after a list is finished
+            $finalString = str_replace('</ul><br />', '</ul>', $finalString);
             
             $finalString = preg_replace(array_keys($bbtags), array_values($bbtags), $finalString);
             
             // put back the bbcode parenthesis
             $finalString = $this->enableBBCodeTags($finalString);
-            
             // Gpower2: we should return valid HTML here
             return nl2br($finalString);
         }
