@@ -70,7 +70,7 @@ namespace Mangetsu\Library\Database
         }
         
         /**
-         * Check if the DatabaseManager object is instanciated
+         * Check if the DatabaseManager object is instantiated
          * @throws Exception
          */
         private function checkDatabaseManager()
@@ -261,7 +261,7 @@ namespace Mangetsu\Library\Database
         }
         
         /**
-         * Kills the current Database handler object, only if it is instanciated
+         * Kills the current Database handler object, only if it is instantiated
          */
         public function KillCurrentDatabaseHandler()
         {
