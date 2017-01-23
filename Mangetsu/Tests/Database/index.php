@@ -12,8 +12,12 @@ namespace Mangetsu\Tests\Database
     });
     
     $dbManager = new \Mangetsu\Library\Database\DatabaseManager("localhost", "root", "root", "animeclipse");
-    echo '<pre>';
+    $dbManager->SetCharacterSetName("utf8");
+    echo ' <meta charset="UTF-8"> ';
     
+    echo '<pre>';  
+
+    echo 'Charset: '.$dbManager->GetCharacterSetName() . '<br />';
     echo 'HostInfo: '.$dbManager->GetHostInfo() . '<br />';
     echo 'ClientInfo: '.$dbManager->GetClientInfo() . '<br />';
     echo 'ClientVersion: '.$dbManager->GetClientVersion() . '<br />';
@@ -43,11 +47,27 @@ namespace Mangetsu\Tests\Database
     echo 'Connection Statistics: ';
     print_r($dbManager->GetConnectionStatistics());
     
+    echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
+    
     echo 'Test SqlGetArray query: ';
-    print_r($dbManager->SqlGetArray("SELECT * FROM phpbb_users LIMIT 0, 40"));
+    print_r($dbManager->SqlGetArray("SELECT * FROM phpbb_users LIMIT 0, 10"));
+    echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+    echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+    echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
+    
+    echo 'Test SqlGetArray query with class: ';
+    $results = $dbManager->SqlGetArray("SELECT * FROM phpbb_users LIMIT 0, 10", "\Mangetsu\Models\User");
+    print_r($results);
+    echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+    echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+    echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
+    echo $results[0]->username . "<br />";
     
     echo 'Test SqlGetSingleValue query: ';
     print_r($dbManager->SqlGetSingleValue("SELECT COUNT(*) FROM phpbb_users"));
+    echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+    echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+    echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
     echo '<br />';
     
     try
@@ -59,11 +79,23 @@ namespace Mangetsu\Tests\Database
         $arraySql[] = "INSERT INTO mkp_link_types VALUES('test02')";
         $arraySql[] = "DELETE FROM mkp_link_types WHERE id > 2";
         $dbManager->SqlMultiExecute($arraySql);
+        echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+        echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+        echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
     }
     catch (\Exception $exc)
     {
         echo '<br />' . $exc . '<br />';
+        echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+        echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+        echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
     }
+    
+    echo '<br />GetLastQuery: ' . $dbManager->GetLastQuery(). '<br />';
+    echo '<br />GetLastQueryElapsedTime: ' . $dbManager->GetLastQueryElapsedTime(). '<br />';
+    echo '<br />GetTotalQueries: ' . $dbManager->GetTotalQueries(). '<br />';
+    
+    echo '<br />GetTotalExecutionTime: ' . $dbManager->GetTotalExecutionTime(). '<br />';
     
     $dbManager->KillCurrentDatabaseHandler();
     $dbManager->Ping();

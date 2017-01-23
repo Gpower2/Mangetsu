@@ -32,7 +32,26 @@ namespace Mangetsu\Library\Database
          * @var string
          */
         private $_DatabaseName = null;
-               
+        /**
+         * The last query that was executed
+         * @var string 
+         */       
+        private $_LastQuery = null;
+        /**
+         * The last query execution time
+         * @var microtime 
+         */
+        private $_LastQueryElapsedTime = null;
+        /**
+         * The number of queries executed
+         * @var int
+         */
+        private $_TotalQueries = 0;        
+        /**
+         * The execution time of all the queries
+         * @var microtime
+         */
+        private $_TotalExecutionTime = 0;
         
         /**
          * The constructor method for DatabaseManager.
@@ -95,6 +114,42 @@ namespace Mangetsu\Library\Database
             }
         }
         
+        /**
+         * Returns the last query executed
+         * @return string
+         */
+        public function GetLastQuery()
+        {
+            return $this->_LastQuery;
+        }
+
+        /**
+         * Returns the last query execution time
+         * @return microtime
+         */
+        public function GetLastQueryElapsedTime()
+        {
+            return $this->_LastQueryElapsedTime;
+        }
+        
+        /**
+         * Returns the number of total queries executed
+         * @return int
+         */
+        public function GetTotalQueries()
+        {
+            return $this->_TotalQueries;                    
+        }       
+        
+        /**
+         * Returns the total execution time of all queries
+         * @return microtime
+         */
+        public function GetTotalExecutionTime()
+        {
+            return $this->_TotalExecutionTime;                    
+        }       
+
         /**
          * Returns the type of connection used
          * @return string
@@ -203,7 +258,14 @@ namespace Mangetsu\Library\Database
         public function GetAutoCommitMode()
         {
             $this->checkDatabaseManager();
-            return $this->_DatabaseHandler->query("SELECT @@autocommit")->fetch_row()[0];
+            $query = "SELECT @@autocommit";
+            $this->_TotalQueries++;
+            $this->_LastQuery = $query;
+            $startTime = microtime(true);
+            $res = $this->_DatabaseHandler->query($query)->fetch_row()[0];
+            $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+            $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
+            return $res;
         }
         
         /**
@@ -310,7 +372,14 @@ namespace Mangetsu\Library\Database
         public function GetDefaultDatabase()
         {
             $this->checkDatabaseManager();
-            return $this->_DatabaseHandler->query("SELECT DATABASE()")->fetch_row()[0];
+            $query = "SELECT DATABASE()";
+            $this->_TotalQueries++;
+            $this->_LastQuery = $query;
+            $startTime = microtime(true);
+            $res = $this->_DatabaseHandler->query($query)->fetch_row()[0];
+            $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+            $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
+            return $res;
         }
         
         /**
@@ -347,6 +416,9 @@ namespace Mangetsu\Library\Database
         public function SqlGetArray($argSql, $argClassName = '')
         {
             $this->checkDatabaseManager();            
+            $this->_TotalQueries++;
+            $this->_LastQuery = $argSql;
+            $startTime = microtime(true);            
             $result = $this->_DatabaseHandler->query($argSql);
             if ($result) 
             {
@@ -371,11 +443,15 @@ namespace Mangetsu\Library\Database
                     }                    
                 }
                 // free result set
-                $result->close();                
+                $result->close();      
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                 return $finalArray;
             }
             else
             {
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                 throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }            
         }
@@ -391,6 +467,9 @@ namespace Mangetsu\Library\Database
         public function SqlGetSingleValue($argSql)
         {
             $this->checkDatabaseManager();
+            $this->_TotalQueries++;
+            $this->_LastQuery = $argSql;
+            $startTime = microtime(true);  
             $result = $this->_DatabaseHandler->query($argSql);
             if ($result) 
             {
@@ -399,15 +478,21 @@ namespace Mangetsu\Library\Database
                 {
                     $returnResult = $row[0];
                     $result->close();
+                    $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                    $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                     return $returnResult;
                 }
                 else
                 {
+                    $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                    $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                     return NULL;
                 }
             }
             else
             {
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                 throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }
         }
@@ -420,11 +505,18 @@ namespace Mangetsu\Library\Database
         public function SqlExecute($argSql)
         {
             $this->checkDatabaseManager();
+            $this->_TotalQueries++;
+            $this->_LastQuery = $argSql;
+            $startTime = microtime(true);  
             // DML queries don't return a result set
             if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
             {
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                 throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $this->GetErrorCode(), $this->GetErrorMessage(), $argSql);
             }
+            $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+            $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
         }
         
         /**
@@ -443,6 +535,9 @@ namespace Mangetsu\Library\Database
             // iterrate through all the sql queries
             foreach ($argSqlArray as $argSql)
             {
+                $this->_TotalQueries++;
+                $this->_LastQuery = $argSql;
+                $startTime = microtime(true);  
                 // Execute the query and check for errors
                 if ($this->_DatabaseHandler->query($argSql) !== TRUE) 
                 {
@@ -452,9 +547,13 @@ namespace Mangetsu\Library\Database
                     $this->_DatabaseHandler->rollback();
                     // set autocommit to on
                     $this->_DatabaseHandler->autocommit(TRUE);
+                    $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                    $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                     // throw the exception
                     throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
                 }
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
             }
             // if we got here without an exception, everything went according to plan
             // commit transaction
@@ -476,6 +575,10 @@ namespace Mangetsu\Library\Database
             
             // set autocommit to off
             $this->_DatabaseHandler->autocommit(FALSE);
+
+            $this->_TotalQueries++;
+            $this->_LastQuery = $argSql;
+            $startTime = microtime(true);  
             
             // execute multi query
             if ($this->_DatabaseHandler->multi_query($argSql)) 
@@ -495,11 +598,15 @@ namespace Mangetsu\Library\Database
                             $this->_DatabaseHandler->rollback();
                             // set autocommit to on
                             $this->_DatabaseHandler->autocommit(TRUE);
+                            $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                            $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                             // throw the exception
                             throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
                         }
                     }                    
                 } while (TRUE);
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
             }
             else
             {
@@ -509,6 +616,8 @@ namespace Mangetsu\Library\Database
                 $this->_DatabaseHandler->rollback();
                 // set autocommit to on
                 $this->_DatabaseHandler->autocommit(TRUE);
+                $this->_LastQueryElapsedTime = microtime(true) - $startTime;
+                $this->_TotalExecutionTime += $this->_LastQueryElapsedTime;
                 // throw the exception                
                 throw new \Mangetsu\Library\Database\DatabaseException("Error on query!", $errorCode, $errorMessage, $argSql);
             }            
