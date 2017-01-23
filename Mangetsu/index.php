@@ -1,6 +1,8 @@
 <?php
 namespace Mangetsu
 {
+    use Mangetsu\Library\Utilities\MvcHelper;
+    
     /**
      * This is the main and ONLY endpoint for all the Page requests.
      */
@@ -20,7 +22,7 @@ namespace Mangetsu
     });
     
     // We get a clean request Uri in order to process the route request
-    $cleanRequestUri = \Mangetsu\Library\Utilities\MvcHelper::GetCleanRequestUri();
+    $cleanRequestUri = MvcHelper::GetCleanRequestUri();
     
     // We get the route elements from the clean request Uri
     $routeElements = explode('/', $cleanRequestUri);

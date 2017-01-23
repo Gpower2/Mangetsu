@@ -2,6 +2,8 @@
 
 namespace Mangetsu\Tests\Database
 {
+    use \Mangetsu\Library\Database\DatabaseManager;
+    
     spl_autoload_register(function ($argClass) {
         require_once 
             // We go back 3 levels, in order to get back to the root
@@ -11,7 +13,7 @@ namespace Mangetsu\Tests\Database
             $argClass . '.php';
     });
     
-    $dbManager = new \Mangetsu\Library\Database\DatabaseManager("localhost", "root", "root", "animeclipse");
+    $dbManager = new DatabaseManager("localhost", "root", "root", "animeclipse");
     $dbManager->SetCharacterSetName("utf8");
     echo ' <meta charset="UTF-8"> ';
     
